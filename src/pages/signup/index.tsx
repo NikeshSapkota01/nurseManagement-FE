@@ -2,8 +2,10 @@ import Link from "next/link";
 import { NextPage } from "next";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import Eye from "@/assets/Eye.svg";
+import { signupValidationSchema } from "@/rules/validation";
 
 type SignupFormValues = {
   name: string;
@@ -16,6 +18,7 @@ const Signup: NextPage = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<SignupFormValues>({
     defaultValues: {
@@ -24,12 +27,15 @@ const Signup: NextPage = () => {
       password: "",
       acceptAggrement: false,
     },
+    resolver: yupResolver(signupValidationSchema),
   });
 
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => {
     setPasswordShown(passwordShown ? false : true);
   };
+
+  const hasPassword = watch("password");
 
   const onSubmit = (data: SignupFormValues) => {
     console.log(data);
@@ -54,7 +60,9 @@ const Signup: NextPage = () => {
               <div className="mb-4">
                 <label
                   htmlFor="name"
-                  className={`block font-medium text-sm mb-2 `}
+                  className={`block font-medium text-sm mb-2 ${
+                    errors.name ? "text-red-600" : "text-grey-900"
+                  }`}
                 >
                   Full Name
                 </label>
@@ -62,15 +70,25 @@ const Signup: NextPage = () => {
                   type="text"
                   id="name"
                   placeholder="Nikesh Sapkota"
-                  className={`form-control block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300`}
+                  className={`form-control block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300 ${
+                    errors.name &&
+                    "text-red-300 border-red-600 focus:border-red-600 focus:shadow-red-300"
+                  }`}
                   {...register("name")}
                 />
+                {errors.name && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
 
               <div className="mb-4">
                 <label
                   htmlFor="email"
-                  className={`block font-medium text-sm mb-2`}
+                  className={`block font-medium text-sm mb-2 ${
+                    errors.email ? "text-red-600" : "text-grey-900"
+                  }`}
                 >
                   Email:
                 </label>
@@ -78,15 +96,25 @@ const Signup: NextPage = () => {
                   type="text"
                   id="email"
                   placeholder="nikesh@gmail.com"
-                  className={`form-control block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300`}
+                  className={`form-control block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300 ${
+                    errors.email &&
+                    "text-red-300 border-red-600 focus:border-red-600 focus:shadow-red-300"
+                  }`}
                   {...register("email")}
                 />
+                {errors.email && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
 
               <div className="mb-4">
                 <label
                   htmlFor="password"
-                  className={`block font-medium text-sm mb-2 `}
+                  className={`block font-medium text-sm mb-2 ${
+                    errors.password ? "text-red-600" : "text-grey-900"
+                  }`}
                 >
                   Password
                 </label>
@@ -94,16 +122,34 @@ const Signup: NextPage = () => {
                   <input
                     type={passwordShown ? "text" : "password"}
                     placeholder="Password"
-                    className={`form-control inline-block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300`}
+                    className={`form-control inline-block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300 ${
+                      errors.password &&
+                      "text-red-300 border-red-600 focus:border-red-600 focus:shadow-red-300"
+                    }`}
                     {...register("password")}
                   />
                   <i
-                    className="absolute right-4 top-2.5 pointer"
+                    className="absolute right-4 top-2.5"
                     onClick={togglePasswordVisiblity}
                   >
                     <Eye />
                   </i>
                 </div>
+                {errors.password && (
+                  <p className="text-red-600 text-sm mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
+                {!hasPassword && !errors.password && (
+                  <p
+                    className={`text-sm mb-2 ${
+                      errors.password ? "text-red-600" : "text-grey-500"
+                    }`}
+                  >
+                    Use 8 or more characters that contain a mixture of letters,
+                    digits, and symbols.
+                  </p>
+                )}
               </div>
               <div className="mb-4">
                 <div className="flex">
@@ -128,6 +174,11 @@ const Signup: NextPage = () => {
                     </div>
                   </label>
                 </div>
+                {errors.acceptAggrement && (
+                  <p className="text-red-600 text-sm mt-1 ">
+                    {errors.acceptAggrement.message}
+                  </p>
+                )}
               </div>
 
               <button
