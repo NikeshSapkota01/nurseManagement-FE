@@ -1,5 +1,6 @@
-import { NextPage } from "next";
 import Link from "next/link";
+import { NextPage } from "next";
+import { useForm } from "react-hook-form";
 
 type SignupFormValues = {
   name: string;
@@ -9,6 +10,23 @@ type SignupFormValues = {
 };
 
 const Signup: NextPage = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupFormValues>({
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      acceptAggrement: false,
+    },
+  });
+
+  const onSubmit = (data: SignupFormValues) => {
+    console.log(data);
+  };
+
   return (
     <section className="h-screen">
       <div className="container h-full">
@@ -24,11 +42,7 @@ const Signup: NextPage = () => {
               Please enter your details to create an account.
             </p>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-              }}
-            >
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-4">
                 <label
                   htmlFor="name"
@@ -41,6 +55,7 @@ const Signup: NextPage = () => {
                   id="name"
                   placeholder="Nikesh Sapkota"
                   className={`form-control block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300`}
+                  {...register("name")}
                 />
               </div>
 
@@ -56,6 +71,7 @@ const Signup: NextPage = () => {
                   id="email"
                   placeholder="nikesh@gmail.com"
                   className={`form-control block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300`}
+                  {...register("email")}
                 />
               </div>
 
@@ -71,6 +87,7 @@ const Signup: NextPage = () => {
                     type={"password"}
                     placeholder="Password"
                     className={`form-control inline-block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300`}
+                    {...register("password")}
                   />
                 </div>
               </div>
@@ -80,6 +97,7 @@ const Signup: NextPage = () => {
                     type="checkbox"
                     id="selectCheckbox"
                     className="text-grey-300 w-4 h-4 rounded"
+                    {...register("acceptAggrement")}
                   />
                   <label htmlFor="acceptAggrement" className="form-check-label">
                     <div className={`text-sm text-grey-500 ml-2`}>
