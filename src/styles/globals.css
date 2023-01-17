@@ -9,3 +9,9 @@
   }
 }
 
+.background {
+  background: url("../../public/Wallpaper.jpg") no-repeat;
+  background-size: cover;
+  height: 100vh;
+  width: 100%;
+}

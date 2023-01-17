@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { NextPage } from "next";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+
+import Eye from "@/assets/Eye.svg";
 
 type SignupFormValues = {
   name: string;
@@ -22,6 +25,11 @@ const Signup: NextPage = () => {
       acceptAggrement: false,
     },
   });
+
+  const [passwordShown, setPasswordShown] = useState(false);
+  const togglePasswordVisiblity = () => {
+    setPasswordShown(passwordShown ? false : true);
+  };
 
   const onSubmit = (data: SignupFormValues) => {
     console.log(data);
@@ -84,11 +92,17 @@ const Signup: NextPage = () => {
                 </label>
                 <div className="flex relative">
                   <input
-                    type={"password"}
+                    type={passwordShown ? "text" : "password"}
                     placeholder="Password"
                     className={`form-control inline-block w-full px-4 text-sm font-normal text-grey-700 bg-white border border-solid border-grey-300 rounded h-10 focus:text-grey-900 focus:bg-white focus:border-blue-600 focus:outline-none focus:shadow-md focus:shadow-blue-300`}
                     {...register("password")}
                   />
+                  <i
+                    className="absolute right-4 top-2.5 pointer"
+                    onClick={togglePasswordVisiblity}
+                  >
+                    <Eye />
+                  </i>
                 </div>
               </div>
               <div className="mb-4">
