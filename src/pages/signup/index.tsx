@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Link from "next/link";
 import { NextPage } from "next";
 import { useState } from "react";
@@ -49,6 +50,13 @@ const Signup: NextPage = () => {
             <section className="background" />
           </div>
           <div className="lg:ml-20 xl:ml-40 px-6 py-12">
+            <Head>
+              <title>Nurse Management: | Signup</title>
+              <meta
+                name="description"
+                content="Signup page of nurse management"
+              />
+            </Head>
             <h1 className="text-grey-900 text-5xl font-bold ">
               Create account
             </h1>
@@ -190,6 +198,14 @@ const Signup: NextPage = () => {
                 Signup
               </button>
             </form>
+            <div className="text-center text-sm">
+              <p className="text-grey-900 inline-block ">
+                Already have an account? &nbsp;
+              </p>
+              <Link href="/login" className="text-blue-600">
+                Login
+              </Link>
+            </div>
           </div>
         </div>
       </div>
