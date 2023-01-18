@@ -2,12 +2,15 @@ import Head from "next/head";
 import Link from "next/link";
 import { NextPage } from "next";
 import { useState } from "react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import Eye from "@/assets/Eye.svg";
-import { signupValidationSchema } from "@/rules/validation";
+import { createUsers } from "@/services/auth";
 import InputField from "@/components/common/InputField";
+import { signupValidationSchema } from "@/rules/validation";
+
+import Eye from "@/assets/Eye.svg";
 
 type SignupFormValues = {
   name: string;
@@ -32,6 +35,8 @@ const Signup: NextPage = () => {
     resolver: yupResolver(signupValidationSchema),
   });
 
+  const router = useRouter();
+
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => {
     setPasswordShown(passwordShown ? false : true);
@@ -39,8 +44,13 @@ const Signup: NextPage = () => {
 
   const hasPassword = watch("password");
 
-  const onSubmit = (data: SignupFormValues) => {
-    console.log(data);
+  const onSubmit = async (data: SignupFormValues) => {
+    try {
+      await createUsers(data);
+      router.push("/login");
+    } catch (e) {
+      console.log("e", e);
+    }
   };
 
   return (

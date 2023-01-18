@@ -22,6 +22,7 @@
       "@/rules/*": ["src/rules/*"],
       "@/styles/*": ["src/styles/*"],
       "@/assets/*": ["src/assets/*"],
+      "@/services/*": ["src/services/*"],
       "@/components/*": ["src/components/*"]
     }
   },
