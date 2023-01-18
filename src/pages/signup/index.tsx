@@ -4,8 +4,10 @@ import { NextPage } from "next";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
+import { ToastContainer } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 
+import { errorToast } from "@/utils/toast";
 import { createUsers } from "@/services/auth";
 import InputField from "@/components/common/InputField";
 import { signupValidationSchema } from "@/rules/validation";
@@ -46,16 +48,21 @@ const Signup: NextPage = () => {
 
   const onSubmit = async (data: SignupFormValues) => {
     try {
-      await createUsers(data);
+      const user = await createUsers(data);
+
       router.push("/login");
-    } catch (e) {
-      console.log("e", e);
+    } catch (err: any) {
+      errorToast({
+        title: err.message || err,
+      });
     }
   };
 
   return (
     <section className="h-screen">
       <div className="container h-full">
+        <ToastContainer />
+
         <div className="lg:grid lg:grid-cols-2 lg:gap-4 justify-center items-center">
           <div className="hidden lg:block ImgContainer h-full relative">
             <section className="background" />
