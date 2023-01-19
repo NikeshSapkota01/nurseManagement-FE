@@ -13,6 +13,8 @@ import InputField from "@/components/common/InputField";
 import { signupValidationSchema } from "@/rules/validation";
 
 import Eye from "@/assets/Eye.svg";
+import withAuth from "src/lib/withAuth";
+import { handleError } from "@/utils/error";
 
 type SignupFormValues = {
   name: string;
@@ -51,10 +53,8 @@ const Signup: NextPage = () => {
       const user = await createUsers(data);
 
       router.push("/login");
-    } catch (err: any) {
-      errorToast({
-        title: err.message || err,
-      });
+    } catch (error: any) {
+      handleError(error);
     }
   };
 
@@ -186,4 +186,4 @@ const Signup: NextPage = () => {
   );
 };
 
-export default Signup;
+export default withAuth(Signup);
