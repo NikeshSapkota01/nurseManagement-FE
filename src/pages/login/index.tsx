@@ -3,13 +3,16 @@ import Link from "next/link";
 import { NextPage } from "next";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { ToastContainer } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { login } from "@/services/auth";
+import { setLoggedInUser } from "@/reducers/auth";
 import InputField from "@/components/common/InputField";
 import { loginValidationSchema } from "@/rules/validation";
+import { saveTokens, parseUserToken } from "@/services/token";
 
 import Eye from "@/assets/Eye.svg";
 import withAuth from "src/lib/withAuth";
@@ -35,6 +38,7 @@ const Login: NextPage = () => {
   });
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => {
@@ -46,6 +50,11 @@ const Login: NextPage = () => {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const tokens = await login(data);
+
+      saveTokens(tokens);
+      const user = parseUserToken(tokens?.accessToken ?? "");
+      dispatch(setLoggedInUser(user));
+      router.push("/dashboard");
     } catch (error: any) {
       handleError(error);
     }

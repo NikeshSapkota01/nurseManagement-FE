@@ -23,6 +23,7 @@
       "@/styles/*": ["src/styles/*"],
       "@/assets/*": ["src/assets/*"],
       "@/services/*": ["src/services/*"],
+      "@/reducers/*": ["src/reducers/*"],
       "@/components/*": ["src/components/*"]
     }
   },

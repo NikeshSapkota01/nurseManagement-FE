@@ -1,24 +1,21 @@
 import { post } from "@/utils/httpUtils";
 import endpoints from "src/constants/endpoint";
 
-interface createUsers {
-  name: string;
+interface IUserLogin {
   email: string;
   password: string;
+}
+interface IUserSignUp extends IUserLogin {
+  name: string;
   acceptAggrement: boolean;
 }
 
-interface login {
-  email: string;
-  password: string;
-}
-
-export const createUsers = async (payload: createUsers) => {
+export const createUsers = async (payload: IUserSignUp) => {
   const { data } = await post(endpoints.users.createUser, payload);
   return data;
 };
 
-export const login = async (payload: login) => {
+export const login = async (payload: IUserLogin) => {
   const { data } = await post(endpoints.auth.login, payload);
-  return data;
+  return data?.data;
 };
