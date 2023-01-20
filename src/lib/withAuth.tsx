@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
+import { parseToken } from "@/services/token";
+
 const withAuth = <P extends object>(
   WrappedComponent: React.ComponentType<P>
 ) => {
@@ -13,18 +15,25 @@ const withAuth = <P extends object>(
 
     const { pathname } = router;
 
-    useEffect(() => {
-      // check if the user is authenticated
-      // set the isAuthenticated state and user state accordingly
-    }, []);
+    const hasToken = parseToken();
 
     useEffect(() => {
-      if (!isAuthenticated && pathname === "/signup") {
-        // redirect the user to the login page
-        router.push("/signup");
-      } else {
-        router.push("/login");
+      if (!hasToken) {
+        if (!isAuthenticated && pathname === "/signup") {
+          // redirect the user to the login page
+          router.push("/signup");
+        } else {
+          router.push("/login");
+        }
       }
+
+      if (
+        (hasToken && router.pathname === "/login") ||
+        (hasToken && router.pathname === "/signup")
+      ) {
+        router.push("/dashboard");
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
