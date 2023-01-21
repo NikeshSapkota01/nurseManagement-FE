@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { ToastContainer } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { errorToast } from "@/utils/toast";
 import { createUsers } from "@/services/auth";
 import InputField from "@/components/common/InputField";
 import { signupValidationSchema } from "@/rules/validation";

@@ -7,11 +7,6 @@ export const menuItems = [
     img: <Dashboard />,
   },
   {
-    name: "List Nurses",
-    path: "/nurse/list",
-    img: <Dashboard />,
-  },
-  {
     name: "Create Nurse",
     path: "/nurse/add",
     img: <Dashboard />,
