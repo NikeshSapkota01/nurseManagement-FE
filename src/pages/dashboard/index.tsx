@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import AddNurse from "./AddNurse";
 import withAuth from "src/lib/withAuth";
 import Layout from "@/components/Layout";
 import { getFullName } from "@/utils/utils";
@@ -135,14 +136,8 @@ const Dashboard: NextPage = () => {
         ) : (
           <>
             <h1> Nurse Management </h1>
-            <button
-              className="inline-block mb-9 p-2 mt-5 h-10 bg-blue-500 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out disabled:bg-blue-200"
-              data-mdb-ripple="true"
-              data-mdb-ripple-color="light"
-              onClick={() => setOpen(true)}
-            >
-              Add New Nurse
-            </button>
+
+            <AddNurse />
             <Table columns={columns} data={data ?? []} />
           </>
         )}
