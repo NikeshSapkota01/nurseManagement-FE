@@ -135,3 +135,45 @@ export async function responseInterceptor(err: any) {
 
 http.interceptors.request.use(requestInterceptor);
 http.interceptors.response.use((response) => response, responseInterceptor);
+
+/**
+ * Build supplied string by interpolating properties after delimiter ':' with the given parameters.
+ *
+ * @example
+ * interpolate(':name is here.', {name: 'Colly'})
+ * => 'Colly is here.'
+ *
+ * @param {string} str
+ * @param {object} params
+ * @param {object} queries
+ *
+ * @returns String.
+ */
+export function interpolate(str: string, params: {}, queries = {}) {
+  if (typeof str !== "string") {
+    throw new TypeError("First Argument must be a string");
+  }
+  let formattedString = str;
+
+  params = params || {}; // default params won't resolve to {} if null is passed.
+  for (const [key, value] of Object.entries(params)) {
+    const val = value || "";
+
+    formattedString = formattedString.replace(
+      new RegExp(":" + key + "\\b", "gi"),
+      val.toString()
+    );
+  }
+
+  if (Object.values(queries).filter((a) => a).length) {
+    formattedString += "?";
+    Object.entries(queries).forEach(([name, value]) => {
+      if (name && value) {
+        formattedString += `${name}=${value}&`;
+      }
+    });
+    formattedString = formattedString.slice(0, formattedString.length - 1);
+  }
+
+  return formattedString;
+}
