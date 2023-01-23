@@ -24,7 +24,6 @@ const DeleteModal = ({
   }).then((result) => {
     if (result.isConfirmed) {
       confirmHandler();
-      Swal.fire("Deleted!", "Your file has been deleted.", "success");
     }
   });
 };

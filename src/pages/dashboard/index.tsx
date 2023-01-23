@@ -7,10 +7,10 @@ import withAuth from "src/lib/withAuth";
 import Layout from "@/components/Layout";
 import { getFullName } from "@/utils/utils";
 import Table from "@/components/common/Table";
-import { fetchAllNurse } from "@/reducers/nurse";
-import DeleteModal from "@/components/Layout/Modal";
 import Loading from "@/components/Layout/Loader";
 import DropDown from "@/components/Layout/Dropdown";
+import DeleteModal from "@/components/Layout/DeleteModal";
+import { deleteNurse, fetchAllNurse } from "@/reducers/nurse";
 
 type CellProps = {
   value: number;
@@ -20,6 +20,7 @@ const Dashboard: NextPage = () => {
   const [data, setData] = useState([]);
   const [status, setStatus] = useState("info");
   const [open, setOpen] = useState(false);
+  const [currentNurseId, setCurrentNurseId] = useState(0);
 
   const columns = useMemo(
     () => [
@@ -71,7 +72,7 @@ const Dashboard: NextPage = () => {
         Cell: ({ value: initialValue }: CellProps) => {
           const onItemClick = (value: string) => {
             console.log("value", value, initialValue);
-
+            setCurrentNurseId(initialValue);
             if (value === "delete") setOpen(true);
           };
 
@@ -109,11 +110,17 @@ const Dashboard: NextPage = () => {
   useEffect(() => {
     if (open) {
       DeleteModal({
-        confirmHandler: () => console.log("val"),
+        confirmHandler: () => handleDelete(),
       });
       setOpen(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  const handleDelete = () => {
+    dispatch(deleteNurse(currentNurseId));
+    setCurrentNurseId(0);
+  };
 
   return (
     <div>
@@ -136,7 +143,7 @@ const Dashboard: NextPage = () => {
             >
               Add New Nurse
             </button>
-            <Table columns={columns} data={data} />
+            <Table columns={columns} data={data ?? []} />
           </>
         )}
       </Layout>
