@@ -10,6 +10,11 @@ import Table from "@/components/common/Table";
 import { fetchAllNurse } from "@/reducers/nurse";
 import DeleteModal from "@/components/Layout/Modal";
 import Loading from "@/components/Layout/Loader";
+import DropDown from "@/components/Layout/Dropdown";
+
+type CellProps = {
+  value: number;
+};
 
 const Dashboard: NextPage = () => {
   const [data, setData] = useState([]);
@@ -59,6 +64,27 @@ const Dashboard: NextPage = () => {
         Header: "End Time",
         accessor: "duty_end_time",
         isSortable: true,
+      },
+      {
+        Header: "Action",
+        accessor: "id",
+        Cell: ({ value: initialValue }: CellProps) => {
+          const onItemClick = (value: string) => {
+            console.log("value", value, initialValue);
+
+            if (value === "delete") setOpen(true);
+          };
+
+          return (
+            <DropDown
+              options={[
+                { label: "Edit", value: "edit" },
+                { label: "Delete", value: "delete" },
+              ]}
+              onItemClick={onItemClick}
+            />
+          );
+        },
       },
     ],
     []
