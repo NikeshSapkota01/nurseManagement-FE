@@ -3,10 +3,10 @@ import React from "react";
 import { CustomeModal } from "@/components/Layout/Modal";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginValidationSchema } from "@/rules/validation";
+import { createNurseSchema } from "@/rules/validation";
 import InputField from "@/components/common/InputField";
 
-type LoginFormValues = {
+type AddNurseValue = {
   firstName: string;
   middleName: string;
   lastName: string;
@@ -25,7 +25,7 @@ const AddNurse: React.FC = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<LoginFormValues>({
+  } = useForm<AddNurseValue>({
     defaultValues: {
       firstName: "",
       middleName: "",
@@ -38,62 +38,30 @@ const AddNurse: React.FC = () => {
       isRoundingManager: false,
       image: "",
     },
-    resolver: yupResolver(loginValidationSchema),
+    resolver: yupResolver(createNurseSchema),
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    console.log("data", data);
+  const onSubmit = async (data: AddNurseValue) => {
+    console.log("data");
   };
 
   return (
     <CustomeModal
       label="Add New Nurse"
       contentLabel="Nurse Modal"
-      onConfirm={() => console.log("Button confirm")}
-      onDiscard={() => console.log("Button discard")}
-      buttons={[
-        {
-          role: "custom",
-          onClick: () => reset(),
-          classes:
-            "bg-zinc-500/20 px-4 py-2 rounded-lg hover:bg-zinc-500/30 transition-all duration-200",
-          label: "Reset",
-        },
-        {
-          role: "discard",
-          toClose: true,
-          classes:
-            "bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition-all duration-200 m-10",
-          label: "Discard",
-        },
-        {
-          role: "confirm",
-          classes:
-            "bg-green-500 px-4 py-2 rounded-lg hover:bg-green-600 transition-all duration-200",
-          label: "Confirm",
-        },
-      ]}
+      reset={reset}
     >
       <div className="p-4">
         <form onSubmit={handleSubmit(onSubmit)}>
           <InputField
             label="First Name:"
             type="text"
-            id="fistName"
+            id="firstName"
             placeholder="First Name"
             register={register}
-            name={"fistName"}
+            name={"firstName"}
             errorMessage={errors?.firstName}
-          />
-
-          <InputField
-            label="Last Name:"
-            type="text"
-            id="lastName"
-            placeholder="Last Name"
-            register={register}
-            name="lastName"
-            errorMessage={errors?.lastName}
+            required
           />
 
           <InputField
@@ -107,6 +75,17 @@ const AddNurse: React.FC = () => {
           />
 
           <InputField
+            label="Last Name:"
+            type="text"
+            id="lastName"
+            placeholder="Last Name"
+            register={register}
+            name="lastName"
+            errorMessage={errors?.lastName}
+            required
+          />
+
+          <InputField
             label="Email:"
             type="text"
             id="email"
@@ -114,6 +93,7 @@ const AddNurse: React.FC = () => {
             register={register}
             name="email"
             errorMessage={errors?.email}
+            required
           />
 
           <InputField
@@ -124,6 +104,7 @@ const AddNurse: React.FC = () => {
             register={register}
             name="contact"
             errorMessage={errors?.contact}
+            required
           />
 
           <InputField
@@ -166,6 +147,15 @@ const AddNurse: React.FC = () => {
               </p>
             )}
           </div>
+
+          <button
+            type="submit"
+            className="inline-block mb-9 mt-5 h-10 bg-blue-500 text-white font-medium text-sm uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out w-full disabled:bg-blue-200"
+            data-mdb-ripple="true"
+            data-mdb-ripple-color="light"
+          >
+            Create Nurse
+          </button>
         </form>
       </div>
     </CustomeModal>

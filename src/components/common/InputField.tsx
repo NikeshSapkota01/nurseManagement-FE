@@ -11,6 +11,7 @@ interface InputFieldProps {
   icon?: React.ReactNode;
   children?: React.ReactNode;
   errorMessage: FieldError | undefined;
+  required?: boolean;
 }
 
 const InputField = (props: InputFieldProps) => {
@@ -23,6 +24,7 @@ const InputField = (props: InputFieldProps) => {
     errorMessage,
     placeholder,
     icon,
+    required,
     children,
   } = props;
 
@@ -36,6 +38,7 @@ const InputField = (props: InputFieldProps) => {
           }`}
         >
           {label}
+          {required && " *"}
         </label>
         <div className={`${icon && "flex relative"}`}>
           <input

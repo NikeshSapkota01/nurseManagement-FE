@@ -36,11 +36,11 @@ export const loginValidationSchema = object({
 });
 
 export const createNurseSchema = object({
-  firstName: string().required("firstName is required").max(128),
+  firstName: string().required("First Name is required").max(128),
   middleName: string().max(128),
-  lastName: string().required("lastName is required").max(128),
-  email: string().required("email is required").email("Invalid email").max(128),
-  contact: string().required("contact is required").max(20),
+  lastName: string().required("Last Name is required").max(128),
+  email: string().required("Email is required").email("Invalid email").max(128),
+  contact: string().required("Contact is required").max(20),
   working_days: array().of(mixed().oneOf(Object.values(WorkingDays))),
   duty_start_time: string(),
   duty_end_time: string(),

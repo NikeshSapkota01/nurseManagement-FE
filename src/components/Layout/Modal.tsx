@@ -1,5 +1,7 @@
 import React from "react";
 import Modal from "react-modal";
+import CloseButton from "@/components/Layout/CloseButton";
+import { UseFormReset } from "react-hook-form";
 
 const customStyles = {
   content: {
@@ -9,25 +11,32 @@ const customStyles = {
     bottom: "auto",
     marginRight: "-50%",
     transform: "translate(-50%, -50%)",
+    width: "80%",
+    maxWidth: "600px",
+    overflow: "scroll",
+    maxHeight: "90vh",
+    padding: "1rem",
+    borderRadius: "0.5rem",
+    boxShadow:
+      "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+  },
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
   },
 };
 
 interface modalTypes {
   label: string;
   children: React.ReactNode;
-  buttons: any;
-  onDiscard: () => void;
-  onConfirm: () => void;
   contentLabel: string;
+  reset: () => void;
 }
 
 export const CustomeModal = ({
   label,
   children,
   contentLabel,
-  buttons = [],
-  onDiscard,
-  onConfirm,
+  reset,
 }: modalTypes) => {
   const [modalIsOpen, setIsOpen] = React.useState(false);
 
@@ -36,6 +45,7 @@ export const CustomeModal = ({
   }
 
   function closeModal() {
+    reset();
     setIsOpen(false);
   }
 
@@ -55,34 +65,8 @@ export const CustomeModal = ({
         style={customStyles}
         contentLabel={contentLabel}
       >
+        <CloseButton onClick={closeModal} />
         {children}
-
-        <div className="flex items-center justify-end mr-4 ml-4 rounded-b">
-          {buttons.map((button: any, index: number) => (
-            <button
-              onClick={() => {
-                if (button.role === "discard") {
-                  onDiscard();
-                }
-                if (button.role === "confirm") {
-                  onConfirm();
-                }
-
-                if (button.role === "custom") {
-                  button.onClick();
-                }
-
-                if (button.toClose) {
-                  closeModal();
-                }
-              }}
-              key={index}
-              className={button.classes}
-            >
-              {button.label}
-            </button>
-          ))}
-        </div>
       </Modal>
     </div>
   );
