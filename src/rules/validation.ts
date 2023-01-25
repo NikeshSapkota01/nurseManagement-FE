@@ -2,11 +2,13 @@ import * as yup from "yup";
 import YupPassword from "yup-password";
 YupPassword(yup); // extend yup
 
-export const signupValidationSchema = yup.object().shape({
-  name: yup.string().required("Name is required"),
-  email: yup.string().required("Email is required").email("Email is invalid"),
-  password: yup
-    .string()
+import { object, string, array, mixed, boolean, bool } from "yup";
+import { WorkingDays } from "src/constants/constant";
+
+export const signupValidationSchema = object({
+  name: string().required("Name is required"),
+  email: string().required("Email is required").email("Email is invalid"),
+  password: string()
     .required(
       "Use 6 or more characters that contain a mixture of letters, digits, and symbols."
     )
@@ -16,13 +18,12 @@ export const signupValidationSchema = yup.object().shape({
     .minUppercase(1, "password must contain at least 1 upper case letter")
     .minNumbers(1, "password must contain at least 1 number")
     .minSymbols(1, "password must contain at least 1 special character"),
-  acceptAggrement: yup.bool().oneOf([true], "Please accept our policies"),
+  acceptAggrement: bool().oneOf([true], "Please accept our policies"),
 });
 
-export const loginValidationSchema = yup.object().shape({
-  email: yup.string().required("Email is required").email("Email is invalid"),
-  password: yup
-    .string()
+export const loginValidationSchema = object({
+  email: string().required("Email is required").email("Email is invalid"),
+  password: string()
     .required(
       "Use 6 or more characters that contain a mixture of letters, digits, and symbols."
     )
@@ -32,4 +33,17 @@ export const loginValidationSchema = yup.object().shape({
     .minUppercase(1, "password must contain at least 1 upper case letter")
     .minNumbers(1, "password must contain at least 1 number")
     .minSymbols(1, "password must contain at least 1 special character"),
+});
+
+export const createNurseSchema = object({
+  firstName: string().required("firstName is required").max(128),
+  middleName: string().max(128),
+  lastName: string().required("lastName is required").max(128),
+  email: string().required("email is required").email("Invalid email").max(128),
+  contact: string().required("contact is required").max(20),
+  working_days: array().of(mixed().oneOf(Object.values(WorkingDays))),
+  duty_start_time: string(),
+  duty_end_time: string(),
+  image: string().max(1024),
+  isRoundingManager: boolean(),
 });
