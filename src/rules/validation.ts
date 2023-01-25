@@ -43,7 +43,23 @@ export const createNurseSchema = object({
   contact: string().required("Contact is required").max(20),
   working_days: array().of(mixed().oneOf(Object.values(WorkingDays))),
   duty_start_time: string(),
-  duty_end_time: string(),
+  duty_end_time: string().when("duty_start_time", (startTime, schema) => {
+    if (startTime) {
+      return schema
+        .required("End time is required.")
+        .test(
+          "end-time-greater-than-start-time",
+          "End time must be greater than start time.",
+          function (value: string) {
+            return (
+              new Date(`1970-01-01T${value}`) >
+              new Date(`1970-01-01T${startTime}`)
+            );
+          }
+        );
+    }
+    return schema;
+  }),
   image: string().max(1024),
   isRoundingManager: boolean(),
 });
