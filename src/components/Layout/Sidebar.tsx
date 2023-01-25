@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Disclosure } from "@headlessui/react";
 
 import { menuItems } from "./routes";
+import { removeTokens } from "@/services/token";
 
 import Logo from "@/assets/Logo.svg";
 import Logout from "@/assets/Logout.svg";
@@ -60,7 +61,9 @@ const Sidebar = () => {
               <div className="flex mb-2 text-grey-500 text-sm justify-start items-center gap-4 pl-5 hover:text-blue-500 p-2 group/item hover:bg-grey-100 cursor-pointer m-auto">
                 <Logout className="text-2xl text-gray-600 group-hover:text-white " />
                 <span className="text-base text-gray-800 group-hover:text-white font-semibold ">
-                  <Link href={"/"}>Logout</Link>
+                  <Link href={"/"} onClick={removeTokens}>
+                    Logout
+                  </Link>
                 </span>
               </div>
             </div>
