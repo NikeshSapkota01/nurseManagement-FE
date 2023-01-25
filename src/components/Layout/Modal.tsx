@@ -28,26 +28,19 @@ interface modalTypes {
   label: string;
   children: React.ReactNode;
   contentLabel: string;
-  reset: () => void;
+  openModal: () => void;
+  closeModal: () => void;
+  modalIsOpen: boolean;
 }
 
 export const CustomeModal = ({
   label,
   children,
   contentLabel,
-  reset,
+  openModal,
+  closeModal,
+  modalIsOpen = false,
 }: modalTypes) => {
-  const [modalIsOpen, setIsOpen] = React.useState(false);
-
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function closeModal() {
-    reset();
-    setIsOpen(false);
-  }
-
   return (
     <div>
       <button

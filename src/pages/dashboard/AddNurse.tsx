@@ -1,25 +1,18 @@
 import React from "react";
 
 import { CustomeModal } from "@/components/Layout/Modal";
-import { useForm } from "react-hook-form";
+import { useForm, useController } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createNurseSchema } from "@/rules/validation";
 import InputField from "@/components/common/InputField";
-
-type AddNurseValue = {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  email: string;
-  contact: string;
-  workingDays: any;
-  duty_start_time: string;
-  duty_end_time: string;
-  isRoundingManager: boolean;
-  image?: string;
-};
+import { addNurse } from "@/reducers/nurse";
+import { useDispatch } from "react-redux";
+import { AddNurseValue } from "src/constants/interface";
+import { AppDispatch } from "store";
 
 const AddNurse: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
   const {
     register,
     handleSubmit,
@@ -32,24 +25,36 @@ const AddNurse: React.FC = () => {
       lastName: "",
       email: "",
       contact: "",
-      workingDays: [],
+      working_days: ["MONDAY"],
       duty_start_time: "",
       duty_end_time: "",
       isRoundingManager: false,
-      image: "",
     },
     resolver: yupResolver(createNurseSchema),
   });
 
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    reset();
+    setIsOpen(false);
+  }
+
   const onSubmit = async (data: AddNurseValue) => {
-    console.log("data");
+    dispatch(addNurse(data));
   };
 
   return (
     <CustomeModal
       label="Add New Nurse"
       contentLabel="Nurse Modal"
-      reset={reset}
+      closeModal={closeModal}
+      openModal={openModal}
+      modalIsOpen={modalIsOpen}
     >
       <div className="p-4">
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -109,7 +114,7 @@ const AddNurse: React.FC = () => {
 
           <InputField
             label="Duty start time:"
-            type="text"
+            type="time"
             id="duty_start_time"
             placeholder="Duty start time"
             register={register}
@@ -119,7 +124,7 @@ const AddNurse: React.FC = () => {
 
           <InputField
             label="Duty end time:"
-            type="text"
+            type="time"
             id="duty_end_time"
             placeholder="Duty end time"
             register={register}

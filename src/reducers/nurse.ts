@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { get, remove, interpolate } from "@/utils/httpUtils";
 import endpoints from "src/constants/endpoint";
+import { AddNurseValue } from "src/constants/interface";
+import { get, remove, interpolate, post } from "@/utils/httpUtils";
 
 export interface FetchDataType {
   data: any;
@@ -14,12 +15,25 @@ export const fetchAllNurse = createAsyncThunk("nurse/fetchAll", async () => {
   return response?.data;
 });
 
-export const deleteNurse = createAsyncThunk("nurse/delete", async (payload) => {
-  const { data: response } = await remove(
-    interpolate(endpoints.nurse.deleteNurse, { nurseId: payload })
-  );
-  return response;
-});
+export const addNurse = createAsyncThunk(
+  "nurse/add",
+  async (payload: AddNurseValue) => {
+    const { data: response } = await post(endpoints.nurse.createNurse, {
+      ...payload,
+    });
+    return response?.data;
+  }
+);
+
+export const deleteNurse = createAsyncThunk(
+  "nurse/delete",
+  async (payload: number) => {
+    const { data: response } = await remove(
+      interpolate(endpoints.nurse.deleteNurse, { nurseId: payload })
+    );
+    return response;
+  }
+);
 
 const nurseSlice = createSlice({
   name: "nurse",
@@ -42,7 +56,12 @@ const nurseSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-      // delete practitioner
+      // add nurse
+      .addCase(addNurse.fulfilled, (state, action) => {
+        const nurse = action.payload[0];
+        state.data = [...state.data, nurse];
+      })
+      // delete nurse
       .addCase(deleteNurse.fulfilled, (state, action) => {
         const { nurseId } = action.payload;
         const nurseData = state.data.filter(
