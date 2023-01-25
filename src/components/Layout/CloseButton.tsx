@@ -22,9 +22,9 @@ function CloseButton({
         <path
           d="M6 18L18 6M6 6l12 12"
           fill="none"
-          stroke-width="3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </button>

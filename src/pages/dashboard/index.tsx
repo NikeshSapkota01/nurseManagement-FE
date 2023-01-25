@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import AddNurse from "./AddNurse";
+import { AppDispatch } from "store";
 import withAuth from "src/lib/withAuth";
 import Layout from "@/components/Layout";
 import { getFullName } from "@/utils/utils";
@@ -22,6 +23,9 @@ const Dashboard: NextPage = () => {
   const [status, setStatus] = useState("info");
   const [open, setOpen] = useState(false);
   const [currentNurseId, setCurrentNurseId] = useState(0);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const userInfo = useSelector((state: any) => state?.nurse);
 
   const columns = useMemo(
     () => [
@@ -91,9 +95,6 @@ const Dashboard: NextPage = () => {
     ],
     []
   );
-
-  const dispatch = useDispatch();
-  const userInfo = useSelector((state: any) => state?.nurse);
 
   useEffect(() => {
     dispatch(fetchAllNurse() as any);
