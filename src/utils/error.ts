@@ -1,21 +1,17 @@
 import { errorToast } from "./toast";
 
 interface MyError extends Error {
-  response?: {
-    data?: {
-      message?: string;
-      data?: string;
-    };
+  data?: {
+    message?: string;
+    data?: string;
   };
 }
 
 export function handleError(err: MyError) {
-  const error = err.response?.data;
+  console.log("🚀 ~ file: error.ts:11 ~ handleError ~ err", err);
+  const error = err?.data?.data || err.data?.message?.toString();
 
-  const title =
-    error?.data?.toString() ??
-    error?.message?.toString() ??
-    "Something went wrong!";
+  const title = error ?? "Something went wrong!";
 
   errorToast({ title });
 }

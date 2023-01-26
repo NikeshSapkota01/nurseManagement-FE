@@ -109,24 +109,35 @@ export async function responseInterceptor(err: any) {
 
   const refreshToken = getRefreshToken();
 
-  if (!refreshToken) return removeTokens();
+  if (!refreshToken) {
+    removeTokens();
+
+    return Promise.reject(error);
+  }
 
   if (error.status === 401 && error.data.message === "Unauthorized access!") {
     try {
-      return http
-        .post(endpoints.auth.token, { refreshToken })
-        .then(({ data }) => {
-          saveAccessToken(data.data.accessToken);
-          axios.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${data.data.accessToken}`;
-          originalRequest.headers[
-            "Authorization"
-          ] = `Bearer ${data.data.accessToken}`;
-          return http(originalRequest);
-        });
+      const data = await post(endpoints.auth.token, { refreshToken });
+
+      if (!data) {
+        removeTokens();
+
+        throw new Error("there is no refresh token");
+      }
+
+      const newAccessToken = `Bearer ${data.data.accessToken}`;
+
+      saveAccessToken(data.data.accessToken);
+
+      axios.defaults.headers.common["Authorization"] = newAccessToken;
+
+      originalRequest.headers["Authorization"] = newAccessToken;
+
+      return http(originalRequest);
     } catch (error) {
       removeTokens();
+
+      throw error;
     }
   }
 
