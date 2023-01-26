@@ -1,22 +1,27 @@
-import React from "react";
+import { AppDispatch } from "store";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
 
-import { CustomeModal } from "@/components/Layout/Modal";
-import { useForm, useController } from "react-hook-form";
+import { addNurse } from "@/reducers/nurse";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createNurseSchema } from "@/rules/validation";
+
 import InputField from "@/components/common/InputField";
-import { addNurse } from "@/reducers/nurse";
-import { useDispatch } from "react-redux";
 import { AddNurseValue } from "src/constants/interface";
-import { AppDispatch } from "store";
+import { CustomeModal } from "@/components/Layout/Modal";
+import { WorkingDaysOption } from "src/constants/constant";
+import SelectField from "@/components/common/Select";
 
 const AddNurse: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const {
     register,
+    setValue,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<AddNurseValue>({
     defaultValues: {
@@ -25,7 +30,7 @@ const AddNurse: React.FC = () => {
       lastName: "",
       email: "",
       contact: "",
-      working_days: ["MONDAY"],
+      working_days: [],
       duty_start_time: "",
       duty_end_time: "",
       isRoundingManager: false,
@@ -33,7 +38,7 @@ const AddNurse: React.FC = () => {
     resolver: yupResolver(createNurseSchema),
   });
 
-  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   function openModal() {
     setIsOpen(true);
@@ -130,6 +135,15 @@ const AddNurse: React.FC = () => {
             register={register}
             name="duty_end_time"
             errorMessage={errors?.duty_end_time}
+          />
+
+          <SelectField
+            name="working_days"
+            control={control}
+            label="Working days"
+            errorMessage={errors?.working_days}
+            option={WorkingDaysOption}
+            setValue={setValue}
           />
 
           <div className="mb-4">
