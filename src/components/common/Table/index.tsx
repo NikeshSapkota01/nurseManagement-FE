@@ -11,7 +11,7 @@ const ReactTable = ({ tableProps }: any) => {
     canNextPage,
     canPreviousPage,
     prepareRow,
-    selectedFlatRows,
+
     pageOptions,
     gotoPage,
     setPageSize,
@@ -155,14 +155,6 @@ const ReactTable = ({ tableProps }: any) => {
           </li>
         </ul>
       </nav>
-
-      {JSON.stringify(
-        {
-          selectedFlatRows: selectedFlatRows.map(({ original }) => original),
-        },
-        null,
-        2
-      )}
     </div>
   );
 };

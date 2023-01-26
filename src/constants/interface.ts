@@ -10,3 +10,8 @@ export interface AddNurseValue {
   isRoundingManager: boolean;
   image?: string;
 }
+
+export interface ValueOption {
+  value: string;
+  label: string;
+}

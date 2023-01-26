@@ -2,18 +2,19 @@ import Head from "next/head";
 import type { NextPage } from "next";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
-import AddNurse from "./AddNurse";
 import { AppDispatch } from "store";
 import withAuth from "src/lib/withAuth";
+import { deleteNurse, fetchAllNurse } from "@/reducers/nurse";
+
+import AddNurse from "./AddNurse";
 import Layout from "@/components/Layout";
 import { getFullName } from "@/utils/utils";
 import Table from "@/components/common/Table";
 import Loading from "@/components/Layout/Loader";
 import DropDown from "@/components/Layout/Dropdown";
 import DeleteModal from "@/components/Layout/DeleteModal";
-import { deleteNurse, fetchAllNurse } from "@/reducers/nurse";
-import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 import { Checkbox } from "@/components/common/Table/Checkbox";
 
 type CellProps = {
@@ -173,6 +174,16 @@ const Dashboard: NextPage = () => {
 
             <AddNurse />
             <Table tableProps={tableProps} />
+
+            {JSON.stringify(
+              {
+                selectedFlatRows: tableProps.selectedFlatRows?.map(
+                  ({ original }) => original
+                ),
+              },
+              null,
+              2
+            )}
           </>
         )}
       </Layout>
