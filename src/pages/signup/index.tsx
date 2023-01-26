@@ -4,7 +4,6 @@ import { NextPage } from "next";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import { ToastContainer } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { createUsers } from "@/services/auth";
@@ -60,8 +59,6 @@ const Signup: NextPage = () => {
   return (
     <section className="h-screen">
       <div className="container h-full">
-        <ToastContainer />
-
         <div className="lg:grid lg:grid-cols-2 lg:gap-4 justify-center items-center">
           <div className="hidden lg:block ImgContainer h-full relative">
             <section className="background" />

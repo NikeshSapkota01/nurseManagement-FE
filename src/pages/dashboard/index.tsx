@@ -13,6 +13,8 @@ import Loading from "@/components/Layout/Loader";
 import DropDown from "@/components/Layout/Dropdown";
 import DeleteModal from "@/components/Layout/DeleteModal";
 import { deleteNurse, fetchAllNurse } from "@/reducers/nurse";
+import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
+import { Checkbox } from "@/components/common/Table/Checkbox";
 
 type CellProps = {
   value: number;
@@ -96,6 +98,37 @@ const Dashboard: NextPage = () => {
     []
   );
 
+  const tableProps = useTable(
+    {
+      columns,
+      data,
+      initialState: {
+        pageIndex: 0,
+      },
+    },
+    useSortBy,
+    usePagination,
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => [
+        {
+          id: "selection",
+          width: 10,
+          disableSortBy: true,
+          // eslint-disable-next-line
+          Header: ({ getToggleAllRowsSelectedProps }) => (
+            <Checkbox {...getToggleAllRowsSelectedProps()} />
+          ),
+          // eslint-disable-next-line
+          Cell: ({ row }: { row: any }) => (
+            <Checkbox {...row.getToggleRowSelectedProps()} />
+          ),
+        },
+        ...columns,
+      ]);
+    }
+  );
+
   useEffect(() => {
     dispatch(fetchAllNurse() as any);
   }, [dispatch]);
@@ -139,7 +172,7 @@ const Dashboard: NextPage = () => {
             <h1> Nurse Management </h1>
 
             <AddNurse />
-            <Table columns={columns} data={data ?? []} />
+            <Table tableProps={tableProps} />
           </>
         )}
       </Layout>

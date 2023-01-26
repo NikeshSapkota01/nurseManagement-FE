@@ -1,9 +1,6 @@
-import { Checkbox } from "./Checkbox";
-import { useTable, useSortBy, useRowSelect, usePagination } from "react-table";
+import { HeaderGroup, Row } from "react-table";
 
-const ReactTable = ({ columns, data }: any) => {
-  // Use the state and functions returned from useTable to build your UI
-
+const ReactTable = ({ tableProps }: any) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -19,34 +16,7 @@ const ReactTable = ({ columns, data }: any) => {
     gotoPage,
     setPageSize,
     state,
-  } = useTable(
-    {
-      columns,
-      data,
-      initialState: {
-        pageIndex: 0,
-      },
-    },
-    useSortBy,
-    usePagination,
-    useRowSelect,
-    (hooks) => {
-      hooks.visibleColumns.push((columns) => [
-        {
-          id: "selection",
-          width: 10,
-          disableSortBy: true,
-          // eslint-disable-next-line
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <Checkbox {...getToggleAllRowsSelectedProps()} />
-          ),
-          // eslint-disable-next-line
-          Cell: ({ row }) => <Checkbox {...row.getToggleRowSelectedProps()} />,
-        },
-        ...columns,
-      ]);
-    }
-  );
+  } = tableProps;
 
   const { pageIndex, pageSize } = state;
 
@@ -57,7 +27,7 @@ const ReactTable = ({ columns, data }: any) => {
         className="min-w-full border-x border-y rounded-t-lg rounded-r-lg border-blue-200 divide-y divide-blue-200  "
       >
         <thead className="bg-grey-100">
-          {headerGroups.map((headerGroup) => {
+          {headerGroups.map((headerGroup: HeaderGroup) => {
             const {
               key: headerGroupKey,
               role: headerGroupRole,
@@ -100,7 +70,7 @@ const ReactTable = ({ columns, data }: any) => {
           {...getTableBodyProps()}
           className="bg-white divide-y divide-x divide-blue-200"
         >
-          {page.map((row) => {
+          {page.map((row: Row) => {
             prepareRow(row);
 
             const {
@@ -145,7 +115,7 @@ const ReactTable = ({ columns, data }: any) => {
             </button>
           </li>
           <li>
-            {pageOptions.map((number) => (
+            {pageOptions.map((number: number) => (
               <button
                 onClick={() => {
                   gotoPage(number);
