@@ -1,15 +1,17 @@
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { Disclosure } from "@headlessui/react";
 
 import { menuItems } from "./routes";
 import { removeTokens } from "@/services/token";
 
-import Logo from "@/assets/Logo.svg";
 import Logout from "@/assets/Logout.svg";
-import HamburgerMenu from "@/assets/HamburgerMenu.svg";
+import BackArrow from "@/assets/BackArrow.png";
 
-const Sidebar = () => {
+const Sidebar: React.FC<{
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ open, setOpen }) => {
   const router = useRouter();
 
   const isActive = (route: string) => {
@@ -19,58 +21,56 @@ const Sidebar = () => {
     return false;
   };
 
-  return (
-    <div>
-      <Disclosure as="nav">
-        <Disclosure.Button className="absolute top-4 right-4 inline-flex items-center peer justify-center rounded-md p-2 text-gray-800 hover:bg-gray-900 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white group">
-          <HamburgerMenu
-            className="block md:hidden h-6 w-6"
-            aria-hidden="true"
-          />
-        </Disclosure.Button>
-        <div className="pl-6 w-1/2 h-screen bg-white z-20 border-r-2 fixed top-0 -left-96 lg:left-0 lg:w-60 peer-focus:left-0 peer:transition ease-out delay-150 duration-200">
-          <div className="flex flex-col justify-start item-center">
-            <div className="sidebar-header flex items-center justify-center py-8">
-              <div className="max-w-[10rem]">
-                <Link href="/dashboard">
-                  <Logo className="text-2xl" />
-                </Link>
-              </div>
-            </div>
-            <nav>
-              <ul className="border-b border-gray-100 pb-4">
-                <li className="flex mb-2 text-grey-400 justify-start pl-5 m-auto text-xs">
-                  Menus
-                </li>
-                {menuItems.map(({ path, name, img }) => (
-                  <li
-                    className={`flex mb-2 text-grey-500 text-sm justify-start items-center gap-4 pl-5 hover:text-blue-500 p-2 group/item hover:bg-grey-100 cursor-pointer m-auto
-                    ${isActive(path) && "text-blue-900 hover:text-blue-400"}
-                  `}
-                    key={name}
-                  >
-                    <span className="text-2xl">{img}</span>
-                    <Link href={path}>{name}</Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+  console.log("open, setOpen", open, setOpen);
 
-            {/* logout */}
-            <div className=" my-4">
-              <div className="flex mb-2 text-grey-500 text-sm justify-start items-center gap-4 pl-5 hover:text-blue-500 p-2 group/item hover:bg-grey-100 cursor-pointer m-auto">
-                <Logout className="text-2xl text-gray-600 group-hover:text-white " />
-                <span className="text-base text-gray-800 group-hover:text-white font-semibold ">
-                  <Link href={"/"} onClick={removeTokens}>
-                    Logout
-                  </Link>
-                </span>
-              </div>
-            </div>
+  return (
+    <aside
+      id="default-sidebar"
+      className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform  ${
+        open ? "sm:translate-x-full" : "-translate-x-full sm:translate-x-0"
+      }`}
+      aria-label="Sidebar"
+    >
+      {open && (
+        <Image
+          src={BackArrow}
+          className="absolute cursor-pointer rounded-full -right-4 h-10 w-10 top-9 border-2 border-blue-600 "
+          alt="image"
+        />
+      )}
+
+      <div className="h-full px-3 py-4 overflow-y-auto bg-grey-100 bg-grey-800">
+        <ul className="space-y-2">
+          {menuItems.map(({ path, name, img }) => (
+            <li
+              className={`flex items-center p-2 text-base font-normal rounded-lg text-grey-500 hover:bg-grey-100 hover:bg-grey-700
+                    ${isActive(path) && "text-grey-100"}
+                  `}
+              key={name}
+            >
+              <span className="w-6 h-6 text-grey-500 transition duration-75 text-grey-500  ">
+                {img}
+              </span>
+              <Link href={path} className="ml-3">
+                {name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* logout */}
+        <div className="my-4">
+          <div className="flex items-center p-2 text-base font-normal  rounded-lg text-grey-500 hover:bg-grey-100 hover:bg-grey-700">
+            <span className="w-6 h-6 text-grey-500 transition duration-75 text-grey-500  ">
+              <Logout className="text-2xl text-grey-500" />
+            </span>
+            <Link href={"/login"} className="ml-3" onClick={removeTokens}>
+              Logout
+            </Link>
           </div>
         </div>
-      </Disclosure>
-    </div>
+      </div>
+    </aside>
   );
 };
 
