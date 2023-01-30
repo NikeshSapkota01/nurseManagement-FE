@@ -8,6 +8,7 @@ interface InputFieldProps {
   label: string;
   register: any;
   placeholder: string;
+  defaultValue?: string;
   icon?: React.ReactNode;
   children?: React.ReactNode;
   errorMessage: FieldError | undefined;
@@ -23,6 +24,7 @@ const InputField = (props: InputFieldProps) => {
     name,
     errorMessage,
     placeholder,
+    defaultValue,
     icon,
     required,
     children,
@@ -48,6 +50,7 @@ const InputField = (props: InputFieldProps) => {
             }`}
             type={type}
             id={id}
+            defaultValue={defaultValue}
             placeholder={placeholder}
             {...register(name)}
           />

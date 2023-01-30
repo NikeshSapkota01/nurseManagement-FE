@@ -21,8 +21,6 @@ const Sidebar: React.FC<{
     return false;
   };
 
-  console.log("open, setOpen", open, setOpen);
-
   return (
     <aside
       id="default-sidebar"
@@ -34,21 +32,21 @@ const Sidebar: React.FC<{
       {open && (
         <Image
           src={BackArrow}
-          className="absolute cursor-pointer rounded-full -right-4 h-10 w-10 top-9 border-2 border-blue-600 "
+          className="absolute cursor-pointer rounded-full -right-4 h-10 w-10 top-9 border-2 border-blue-600"
           alt="image"
         />
       )}
 
-      <div className="h-full px-3 py-4 overflow-y-auto bg-grey-100 bg-grey-800">
+      <div className="h-full px-3 py-4 overflow-y-auto bg-grey-800">
         <ul className="space-y-2">
           {menuItems.map(({ path, name, img }) => (
             <li
-              className={`flex items-center p-2 text-base font-normal rounded-lg text-grey-500 hover:bg-grey-100 hover:bg-grey-700
-                    ${isActive(path) && "text-grey-100"}
+              className={`flex items-center p-2 text-base font-normal rounded-lg text-grey-500 hover:bg-grey-100
+                    ${isActive(path) && "text-grey-100 hover:text-grey-900"}
                   `}
               key={name}
             >
-              <span className="w-6 h-6 text-grey-500 transition duration-75 text-grey-500  ">
+              <span className="w-6 h-6 text-grey-500 transition duration-75 ">
                 {img}
               </span>
               <Link href={path} className="ml-3">
@@ -60,8 +58,8 @@ const Sidebar: React.FC<{
 
         {/* logout */}
         <div className="my-4">
-          <div className="flex items-center p-2 text-base font-normal  rounded-lg text-grey-500 hover:bg-grey-100 hover:bg-grey-700">
-            <span className="w-6 h-6 text-grey-500 transition duration-75 text-grey-500  ">
+          <div className="flex items-center p-2 text-base font-normal  rounded-lg text-grey-500 hover:bg-grey-100">
+            <span className="w-6 h-6 text-grey-500 transition duration-75  ">
               <Logout className="text-2xl text-grey-500" />
             </span>
             <Link href={"/login"} className="ml-3" onClick={removeTokens}>

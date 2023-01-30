@@ -11,7 +11,6 @@ const ReactTable = ({ tableProps }: any) => {
     canNextPage,
     canPreviousPage,
     prepareRow,
-
     pageOptions,
     gotoPage,
     setPageSize,
@@ -108,7 +107,7 @@ const ReactTable = ({ tableProps }: any) => {
           <li>
             <button
               disabled={!canPreviousPage}
-              className="bg-white w-10 h-10 text-sm items-center  border border-grey-300 disabled:bg-grey-400"
+              className="px-3 py-2 ml-0 leading-tight text-grey-500 bg-white border border-grey-300 rounded-l-lg hover:bg-grey-100 hover:text-grey-700 disabled:bg-grey-300"
               onClick={() => previousPage()}
             >
               {"<"}
@@ -123,8 +122,8 @@ const ReactTable = ({ tableProps }: any) => {
                 key={number}
                 className={
                   number === pageIndex
-                    ? "bg-blue-500 w-10 h-10 text-sm  items-center  border border-blue-300"
-                    : "bg-white w-10 h-10 text-sm  items-center  border border-grey-300"
+                    ? "px-3 py-2 leading-tight text-grey-100 bg-grey-900 border border-grey-300 hover:bg-grey-100 hover:text-grey-700"
+                    : "px-3 py-2 leading-tight text-grey-500 bg-white border border-grey-300 hover:bg-grey-100 hover:text-grey-700"
                 }
               >
                 {number + 1}
@@ -134,7 +133,7 @@ const ReactTable = ({ tableProps }: any) => {
           <li>
             <button
               disabled={!canNextPage}
-              className="bg-white w-10 h-10 text-sm  items-center  border disabled:bg-grey-400"
+              className="px-3 py-2 leading-tight text-grey-500 bg-white border border-grey-300 rounded-r-lg hover:bg-grey-100 hover:text-grey-700 disabled:bg-grey-300"
               onClick={() => nextPage()}
             >
               {">"}
@@ -143,7 +142,7 @@ const ReactTable = ({ tableProps }: any) => {
           <li>
             <select
               value={pageSize}
-              className="w-40 cursor-default bg-white ml-3 w-10 h-10 text-center shadow-md focus:outline-none focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm"
+              className="w-40 cursor-default bg-white ml-3 h-10 text-center shadow-md focus:outline-none focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm"
               onChange={(e) => setPageSize(Number(e.target.value))}
             >
               {[10, 25, 50].map((pageSize) => (
