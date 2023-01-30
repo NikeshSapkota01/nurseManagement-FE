@@ -9,23 +9,23 @@ import { AppDispatch, RootState } from "store";
 import { deleteNurse, fetchAllNurse } from "@/reducers/nurse";
 
 import AddNurse from "./AddNurse";
+import UpdateNurse from "./UpdateNurse";
 import Layout from "@/components/Layout";
 import { getFullName } from "@/utils/utils";
 import Table from "@/components/common/Table";
 import Loading from "@/components/Layout/Loader";
 import DropDown from "@/components/Layout/Dropdown";
+import { AddNurseValue } from "src/constants/interface";
 import DeleteModal from "@/components/Layout/DeleteModal";
 import { Checkbox } from "@/components/common/Table/Checkbox";
 
-type CellProps = {
-  value: number;
-};
-
 const Dashboard: NextPage = () => {
   const [data, setData] = useState([]);
-  const [status, setStatus] = useState("info");
   const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState("info");
+  const [editMode, setEditMode] = useState(false);
   const [currentNurseId, setCurrentNurseId] = useState(0);
+  const [individualNurse, setIndividualNurse] = useState<AddNurseValue>();
 
   const dispatch = useDispatch<AppDispatch>();
   const userInfo = useSelector((state: RootState) => state?.nurse);
@@ -77,11 +77,15 @@ const Dashboard: NextPage = () => {
       {
         Header: "Action",
         accessor: "id",
-        Cell: ({ value: initialValue }: CellProps) => {
+        Cell: ({ row: { original } }: { row: { original: AddNurseValue } }) => {
+          const { id } = original;
           const onItemClick = (value: string) => {
-            console.log("value", value, initialValue);
-            setCurrentNurseId(initialValue);
+            setCurrentNurseId(id ?? 0);
             if (value === "delete") setOpen(true);
+            if (value === "edit") {
+              setIndividualNurse(original);
+              setEditMode(true);
+            }
           };
 
           return (
@@ -116,11 +120,9 @@ const Dashboard: NextPage = () => {
           id: "selection",
           width: 10,
           disableSortBy: true,
-          // eslint-disable-next-line
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <Checkbox {...getToggleAllRowsSelectedProps()} />
           ),
-          // eslint-disable-next-line
           Cell: ({ row }: { row: any }) => (
             <Checkbox {...row.getToggleRowSelectedProps()} />
           ),
@@ -140,6 +142,7 @@ const Dashboard: NextPage = () => {
 
       setData(data);
       setStatus(status);
+      setIndividualNurse(undefined);
     }
   }, [userInfo]);
 
@@ -171,8 +174,16 @@ const Dashboard: NextPage = () => {
         ) : (
           <>
             <h1> Nurse Management </h1>
-
-            <AddNurse />
+            {editMode ? (
+              <UpdateNurse
+                editMode={editMode}
+                setEditMode={setEditMode}
+                nurseId={currentNurseId}
+                individualNurse={individualNurse}
+              />
+            ) : (
+              <AddNurse />
+            )}
             <Table tableProps={tableProps} />
 
             {JSON.stringify(

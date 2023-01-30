@@ -1,29 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import {
-  AddNurseValue,
-  FetchNurseDataType,
-  GetNurseResponseData,
-} from "src/constants/interface";
 import endpoints from "src/constants/endpoint";
+import { AddNurseValue, FetchNurseDataType } from "src/constants/interface";
 
 import { withToastForError } from "@/utils/withToastForError";
-import { get, remove, interpolate, post } from "@/utils/httpUtils";
+import { get, remove, interpolate, post, put } from "@/utils/httpUtils";
 
 export const fetchAllNurse = createAsyncThunk("nurse/fetchAll", async () => {
   const response = await get(endpoints.nurse.getAllNurse);
   return response?.data;
 });
-
-export const fetchNurseById = createAsyncThunk<GetNurseResponseData, number>(
-  "nurse/fetchById",
-  async (payload) => {
-    const response = await get(
-      interpolate(endpoints.nurse.getAllNurseById, { nurseId: payload })
-    );
-    return response?.data;
-  }
-);
 
 export const addNurse = createAsyncThunk(
   "nurse/add",
@@ -31,6 +17,19 @@ export const addNurse = createAsyncThunk(
     const response = await post(endpoints.nurse.createNurse, {
       ...payload,
     });
+    return response?.data;
+  })
+);
+
+export const updateNurse = createAsyncThunk(
+  "nurse/update",
+  withToastForError(async (payload: AddNurseValue) => {
+    const id = payload.id ?? 0;
+    const response = await put(
+      interpolate(endpoints.nurse.updateNurse, { nurseId: +id }),
+      { ...payload }
+    );
+
     return response?.data;
   })
 );
@@ -51,7 +50,6 @@ const nurseSlice = createSlice({
     data: [],
     status: "idle",
     error: null,
-    individualData: [],
   } as FetchNurseDataType,
   reducers: {},
   extraReducers: (builder) => {
@@ -67,14 +65,15 @@ const nurseSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-      // fetch nurse by id
-      .addCase(fetchNurseById.fulfilled, (state, action) => {
-        state.individualDataStatus = "succeeded";
-        state.individualData = action.payload?.data[0];
-      })
       // add nurse
       .addCase(addNurse.fulfilled, (state, action) => {
         state.status = "fullfilled";
+        const nurse = action.payload.data[0];
+        state.data = [...state.data, nurse];
+      })
+      // update
+      .addCase(updateNurse.fulfilled, (state, action) => {
+        state.status = "updated";
         const nurse = action.payload.data[0];
         state.data = [...state.data, nurse];
       })

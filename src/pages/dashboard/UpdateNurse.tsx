@@ -3,8 +3,8 @@ import { AppDispatch, RootState } from "store";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { addNurse } from "@/reducers/nurse";
 import { successToast } from "@/utils/toast";
+import { updateNurse } from "@/reducers/nurse";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createNurseSchema } from "@/rules/validation";
 
@@ -12,8 +12,13 @@ import FormElement from "./FormElement";
 import { AddNurseValue } from "src/constants/interface";
 import { CustomeModal } from "@/components/Layout/Modal";
 
-const AddNurse: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+const UpdateNurse: React.FC<{
+  editMode: boolean;
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  nurseId: number;
+  individualNurse: AddNurseValue | undefined;
+}> = ({ editMode, setEditMode, nurseId, individualNurse }) => {
+  const actionStatus = useSelector((state: RootState) => state?.nurse?.status);
 
   const {
     register,
@@ -24,21 +29,21 @@ const AddNurse: React.FC = () => {
     formState: { errors },
   } = useForm<AddNurseValue>({
     defaultValues: {
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      email: "",
-      contact: "",
-      working_days: [],
-      duty_start_time: "",
-      duty_end_time: "",
-      isRoundingManager: false,
+      firstName: individualNurse?.firstName || "",
+      middleName: individualNurse?.middleName || "",
+      lastName: individualNurse?.lastName || "",
+      email: individualNurse?.email || "",
+      contact: individualNurse?.contact || "",
+      working_days: individualNurse?.working_days || [],
+      duty_start_time: individualNurse?.duty_start_time || "",
+      duty_end_time: individualNurse?.duty_end_time || "",
+      isRoundingManager: individualNurse?.isRoundingManager || false,
     },
     resolver: yupResolver(createNurseSchema),
   });
 
+  const dispatch = useDispatch<AppDispatch>();
   const [modalIsOpen, setIsOpen] = useState(false);
-  const actionStatus = useSelector((state: RootState) => state?.nurse?.status);
 
   function openModal() {
     setIsOpen(true);
@@ -47,27 +52,29 @@ const AddNurse: React.FC = () => {
   function closeModal() {
     reset();
     setIsOpen(false);
+    setEditMode(false);
   }
 
   useEffect(() => {
-    if (actionStatus === "fullfilled") {
+    if (actionStatus === "updated") {
       closeModal();
-      successToast({ title: "Nurse added successfully!!" });
+      successToast({ title: "Nurse updated successfully!!" });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actionStatus]);
 
   const onSubmit = async (data: AddNurseValue) => {
-    dispatch(addNurse(data));
+    data.id = nurseId;
+    dispatch(updateNurse(data));
   };
 
   return (
     <CustomeModal
-      label="Add New Nurse"
+      label="Update Nurse"
       contentLabel="Nurse Modal"
       closeModal={closeModal}
       openModal={openModal}
-      modalIsOpen={modalIsOpen}
+      modalIsOpen={modalIsOpen || editMode}
     >
       <div className="p-4">
         <FormElement
@@ -77,10 +84,11 @@ const AddNurse: React.FC = () => {
           setValue={setValue}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
+          isEdit
         />
       </div>
     </CustomeModal>
   );
 };
 
-export default AddNurse;
+export default UpdateNurse;
