@@ -1,20 +1,29 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
+import {
+  AddNurseValue,
+  FetchNurseDataType,
+  GetNurseResponseData,
+} from "src/constants/interface";
 import endpoints from "src/constants/endpoint";
-import { AddNurseValue } from "src/constants/interface";
+
 import { withToastForError } from "@/utils/withToastForError";
 import { get, remove, interpolate, post } from "@/utils/httpUtils";
-
-export interface FetchDataType {
-  data: any;
-  status: "idle" | "loading" | "succeeded" | "failed" | "fullfilled";
-  error: string | null | undefined;
-}
 
 export const fetchAllNurse = createAsyncThunk("nurse/fetchAll", async () => {
   const response = await get(endpoints.nurse.getAllNurse);
   return response?.data;
 });
+
+export const fetchNurseById = createAsyncThunk<GetNurseResponseData, number>(
+  "nurse/fetchById",
+  async (payload) => {
+    const response = await get(
+      interpolate(endpoints.nurse.getAllNurseById, { nurseId: payload })
+    );
+    return response?.data;
+  }
+);
 
 export const addNurse = createAsyncThunk(
   "nurse/add",
@@ -42,7 +51,8 @@ const nurseSlice = createSlice({
     data: [],
     status: "idle",
     error: null,
-  } as FetchDataType,
+    individualData: [],
+  } as FetchNurseDataType,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -56,6 +66,11 @@ const nurseSlice = createSlice({
       .addCase(fetchAllNurse.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      // fetch nurse by id
+      .addCase(fetchNurseById.fulfilled, (state, action) => {
+        state.individualDataStatus = "succeeded";
+        state.individualData = action.payload?.data[0];
       })
       // add nurse
       .addCase(addNurse.fulfilled, (state, action) => {
