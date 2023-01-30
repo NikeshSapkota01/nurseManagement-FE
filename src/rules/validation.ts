@@ -42,7 +42,7 @@ export const createNurseSchema = object({
   email: string().required("Email is required").email("Invalid email").max(128),
   contact: string().required("Contact is required").max(20),
   working_days: array().of(mixed().oneOf(Object.values(WorkingDays))),
-  duty_start_time: string(),
+  duty_start_time: string().required("Start time must be hh:mm format"),
   duty_end_time: string().when("duty_start_time", (startTime, schema) => {
     if (startTime) {
       return schema

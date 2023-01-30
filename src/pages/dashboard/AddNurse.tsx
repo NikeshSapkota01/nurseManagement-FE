@@ -1,17 +1,18 @@
-import { AppDispatch } from "store";
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
+import { AppDispatch, RootState } from "store";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { addNurse } from "@/reducers/nurse";
+import { successToast } from "@/utils/toast";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createNurseSchema } from "@/rules/validation";
 
+import SelectField from "@/components/common/Select";
 import InputField from "@/components/common/InputField";
 import { AddNurseValue } from "src/constants/interface";
 import { CustomeModal } from "@/components/Layout/Modal";
 import { WorkingDaysOption } from "src/constants/constant";
-import SelectField from "@/components/common/Select";
 
 const AddNurse: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,6 +40,7 @@ const AddNurse: React.FC = () => {
   });
 
   const [modalIsOpen, setIsOpen] = useState(false);
+  const actionStatus = useSelector((state: RootState) => state?.nurse?.status);
 
   function openModal() {
     setIsOpen(true);
@@ -48,6 +50,14 @@ const AddNurse: React.FC = () => {
     reset();
     setIsOpen(false);
   }
+
+  useEffect(() => {
+    if (actionStatus === "fullfilled") {
+      closeModal();
+      successToast({ title: "Nurse added successfully!!" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actionStatus]);
 
   const onSubmit = async (data: AddNurseValue) => {
     dispatch(addNurse(data));

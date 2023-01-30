@@ -2,11 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 import endpoints from "src/constants/endpoint";
 import { AddNurseValue } from "src/constants/interface";
+import { withToastForError } from "@/utils/withToastForError";
 import { get, remove, interpolate, post } from "@/utils/httpUtils";
 
 export interface FetchDataType {
   data: any;
-  status: "idle" | "loading" | "succeeded" | "failed";
+  status: "idle" | "loading" | "succeeded" | "failed" | "fullfilled";
   error: string | null | undefined;
 }
 
@@ -17,12 +18,12 @@ export const fetchAllNurse = createAsyncThunk("nurse/fetchAll", async () => {
 
 export const addNurse = createAsyncThunk(
   "nurse/add",
-  async (payload: AddNurseValue) => {
-    const { data: response } = await post(endpoints.nurse.createNurse, {
+  withToastForError(async (payload: AddNurseValue) => {
+    const response = await post(endpoints.nurse.createNurse, {
       ...payload,
     });
     return response?.data;
-  }
+  })
 );
 
 export const deleteNurse = createAsyncThunk(
@@ -58,7 +59,8 @@ const nurseSlice = createSlice({
       })
       // add nurse
       .addCase(addNurse.fulfilled, (state, action) => {
-        const nurse = action.payload[0];
+        state.status = "fullfilled";
+        const nurse = action.payload.data[0];
         state.data = [...state.data, nurse];
       })
       // delete nurse

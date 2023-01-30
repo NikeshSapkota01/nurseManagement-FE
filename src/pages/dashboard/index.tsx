@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePagination, useRowSelect, useSortBy, useTable } from "react-table";
 
-import { AppDispatch } from "store";
 import withAuth from "src/lib/withAuth";
+import { AppDispatch, RootState } from "store";
 import { deleteNurse, fetchAllNurse } from "@/reducers/nurse";
 
 import AddNurse from "./AddNurse";
@@ -28,7 +28,7 @@ const Dashboard: NextPage = () => {
   const [currentNurseId, setCurrentNurseId] = useState(0);
 
   const dispatch = useDispatch<AppDispatch>();
-  const userInfo = useSelector((state: any) => state?.nurse);
+  const userInfo = useSelector((state: RootState) => state?.nurse);
 
   const columns = useMemo(
     () => [
@@ -131,7 +131,7 @@ const Dashboard: NextPage = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchAllNurse() as any);
+    dispatch(fetchAllNurse());
   }, [dispatch]);
 
   useEffect(() => {
