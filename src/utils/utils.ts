@@ -13,3 +13,22 @@ export const getFullName = (firstName = "", middleName = "", lastName = "") => {
     .map((name) => name.toLowerCase().charAt(0).toUpperCase() + name.slice(1))
     .join(" ");
 };
+
+/**
+ *
+ * @param file File
+ * @returns Promise
+ */
+export const getBase64 = (file: File): Promise<string | null> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = (error) => {
+      reject(error);
+    };
+  });
+};

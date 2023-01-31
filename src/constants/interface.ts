@@ -10,6 +10,7 @@ export interface AddNurseValue {
   duty_end_time: string;
   isRoundingManager: boolean;
   image?: string;
+  nurseImage?: any;
 }
 
 export interface ValueOption {
@@ -31,5 +32,6 @@ export interface FetchNurseDataType {
 
 export interface FileUpload {
   onFileUploaded: (data: any) => void;
-  nurseId?: number;
+  name: string;
+  setValue: any;
 }

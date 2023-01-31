@@ -1,19 +1,11 @@
-import { multiFormData } from "@/utils/httpUtils";
+import Image from "next/image";
+
+import { getBase64 } from "@/utils/utils";
 import { ChangeEvent, useState, useRef } from "react";
-import endpoints from "src/constants/endpoint";
 import { FileUpload } from "src/constants/interface";
 
-/**
- * Component for uploading files.
- *
- * @param {IFileUploadSingeProps} param0
- * @returns
- */
-const FileUploadSingle: React.FC<FileUpload> = ({
-  onFileUploaded,
-  nurseId,
-}) => {
-  const [file, setFile] = useState<File | null>();
+const FileUploadSingle: React.FC<FileUpload> = ({ name, setValue }) => {
+  const [image, setImage] = useState<string | null>("");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -21,27 +13,26 @@ const FileUploadSingle: React.FC<FileUpload> = ({
     if (!e.target.files) {
       return;
     }
+    const image = e.target.files[0];
+    const base64 = await getBase64(image);
 
-    setFile(e.target.files[0]);
-
-    let formData = new FormData();
-    const id = nurseId?.toString() ?? "0";
-
-    formData.append("nurseImage", e.target.files[0]);
-    formData.append("nurseId", id);
-
-    const { data } = await multiFormData.post(
-      endpoints.nurse.uploadImage,
-      formData
-    );
-
-    onFileUploaded(data);
+    setImage(base64);
+    setValue(name, image);
   };
 
   const handleUploadClick = async (event: any) => {
     event.preventDefault();
 
     fileInputRef.current?.click();
+  };
+
+  const handleRemoveClick = async (event: any) => {
+    event.preventDefault();
+    if (fileInputRef.current !== null) {
+      fileInputRef.current.value = "";
+    }
+    setValue(name, null);
+    setImage(null);
   };
 
   return (
@@ -53,14 +44,45 @@ const FileUploadSingle: React.FC<FileUpload> = ({
         onChange={handleFileChange}
       />
 
-      <div>{file && `${file.name} - ${file.type}`}</div>
-      <div className="flex justify-center">
-        <button
-          className="inline-block mb-9 mt-5 h-10 p-2 text-green-500 font-medium text-sm uppercase rounded shadow-md"
-          onClick={handleUploadClick}
-        >
-          Upload Photo
-        </button>
+      <div className="flex flex-col justify-center items-center">
+        {image && (
+          <Image
+            src={image}
+            alt="Pic"
+            width="100"
+            height="100"
+            className="w-20 h-20 p-1 center rounded-full ring-2 ring-grey-300"
+          />
+        )}
+        {image ? (
+          <button
+            className="bg-red-500 hover:bg-red-600 text-white mt-2 font-bold py-2 px-4 rounded-lg flex justify-center"
+            onClick={handleRemoveClick}
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z" />
+            </svg>
+            Remove
+          </button>
+        ) : (
+          <button
+            className="bg-grey-300 hover:bg-grey-400 text-grey-800 font-bold mt-2 py-2 px-4 rounded-lg flex justify-center"
+            onClick={handleUploadClick}
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+            </svg>
+            Upload
+          </button>
+        )}
       </div>
     </div>
   );
