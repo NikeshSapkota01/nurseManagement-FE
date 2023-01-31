@@ -58,11 +58,22 @@ const Dashboard: NextPage = () => {
         Header: "Is Rounding Manager",
         accessor: "isRoundingManager",
         isSortable: true,
+        Cell: ({ value: initialValue }: { value: boolean }) => {
+          if (initialValue) return <p className="text-green-500"> YES </p>;
+          return <p className="text-blue-500">NO </p>;
+        },
       },
       {
         Header: "Working days",
         accessor: "working_days",
         isSortable: true,
+        Cell: ({ value: initialValue }: { value: string }) => {
+          const toArray = initialValue.slice(1, -1).split(",");
+          const formatedData = toArray.map((item: string, key: number) => (
+            <p key={key}>{item.replace(/^"|"$/g, "")} </p>
+          ));
+          return formatedData;
+        },
       },
       {
         Header: "Start Time",
@@ -140,7 +151,16 @@ const Dashboard: NextPage = () => {
     if (userInfo) {
       const { data, status } = userInfo;
 
-      setData(data);
+      let object = [...data];
+
+      const sortedArray = object.sort((a, b) => {
+        if (a.isRoundingManager === b.isRoundingManager) {
+          return 0;
+        }
+        return a.isRoundingManager ? -1 : 1;
+      });
+
+      setData(sortedArray as never[]);
       setStatus(status);
       setIndividualNurse(undefined);
     }

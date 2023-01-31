@@ -14,9 +14,7 @@ export const fetchAllNurse = createAsyncThunk("nurse/fetchAll", async () => {
 export const addNurse = createAsyncThunk(
   "nurse/add",
   withToastForError(async (payload: AddNurseValue) => {
-    const response = await post(endpoints.nurse.createNurse, {
-      ...payload,
-    });
+    const response = await post(endpoints.nurse.createNurse, toJSON(payload));
     return response?.data;
   })
 );
@@ -27,7 +25,7 @@ export const updateNurse = createAsyncThunk(
     const id = payload.id ?? 0;
     const response = await put(
       interpolate(endpoints.nurse.updateNurse, { nurseId: +id }),
-      { ...payload }
+      toJSON(payload)
     );
 
     return response?.data;
@@ -94,6 +92,20 @@ const nurseSlice = createSlice({
       });
   },
 });
+
+/**
+ * Converts AddNurseValue to object to required API.
+ *
+ * @param nurse
+ * @returns
+ */
+const toJSON = (nurse: AddNurseValue) => {
+  return {
+    ...nurse,
+    duty_start_time: nurse.duty_start_time || null,
+    duty_end_time: nurse.duty_end_time || null,
+  };
+};
 
 // export const {} = nurseSlice.actions;
 export default nurseSlice.reducer;
