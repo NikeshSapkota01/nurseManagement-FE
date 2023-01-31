@@ -73,9 +73,14 @@ const nurseSlice = createSlice({
       })
       // update
       .addCase(updateNurse.fulfilled, (state, action) => {
+        const { nurseId } = action.payload;
+
+        const nurseData = state.data.filter(
+          ({ id }: { id: number }) => id !== +nurseId
+        );
+
         state.status = "updated";
-        const nurse = action.payload.data[0];
-        state.data = [...state.data, nurse];
+        state.data = [action.payload.data[0], ...nurseData];
       })
       // delete nurse
       .addCase(deleteNurse.fulfilled, (state, action) => {

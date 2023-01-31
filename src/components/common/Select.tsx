@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Controller,
   FieldError,
@@ -8,6 +8,7 @@ import {
 import Select, { OnChangeValue } from "react-select";
 
 import { ValueOption } from "src/constants/interface";
+import { WorkingDaysOption } from "src/constants/constant";
 
 interface SelectFieldProps {
   name: string;
@@ -34,16 +35,33 @@ const SelectField = (props: SelectFieldProps) => {
     setValue,
     option,
   } = props;
-
-  const [selectedValue, setSeletectedValue] =
-    useState<readonly ValueOption[]>();
+  const defaultValue = control._defaultValues.working_days;
+  const [selectedValue, setSelectedValue] = useState<readonly ValueOption[]>();
 
   const onChange = (newValue: OnChangeValue<ValueOption, true>) => {
     const value = newValue?.map((days) => days.value);
     setValue(name, value);
 
-    return setSeletectedValue(newValue);
+    return setSelectedValue(newValue);
   };
+
+  useEffect(() => {
+    console.log("inside");
+    const selectedWorkingDays = WorkingDaysOption.filter((day) =>
+      defaultValue.includes(day.value)
+    );
+    if (selectedWorkingDays.length > 0) {
+      setSelectedValue(selectedWorkingDays);
+      // remove curly brace and convert to array
+      let toArray = defaultValue.slice(1, -1).split(",");
+      // remove the "" from the array to suit our format
+      let formatedData = toArray.map((item: string) =>
+        item.replace(/^"|"$/g, "")
+      );
+      setValue(name, formatedData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValue, name]);
 
   return (
     <div className="field">
