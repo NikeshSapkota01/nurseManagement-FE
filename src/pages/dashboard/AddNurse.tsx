@@ -3,8 +3,8 @@ import { AppDispatch, RootState } from "store";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { addNurse } from "@/reducers/nurse";
 import { successToast } from "@/utils/toast";
+import { addNurse, addImage } from "@/reducers/nurse";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createNurseSchema } from "@/rules/validation";
 
@@ -58,7 +58,26 @@ const AddNurse: React.FC = () => {
   }, [actionStatus]);
 
   const onSubmit = async (data: AddNurseValue) => {
-    dispatch(addNurse(data));
+    const nurseImage = data.nurseImage;
+    delete data.nurseImage;
+
+    dispatch(addNurse(data)).then((data: any) => {
+      if (data?.error) return;
+      if (!nurseImage) {
+        closeModal();
+        return;
+      }
+
+      const { id } = data.payload.data[0];
+
+      let formData = new FormData();
+      formData.append("nurseImage", nurseImage);
+      formData.append("nurseId", id);
+
+      dispatch(addImage(formData));
+
+      closeModal();
+    });
   };
 
   return (

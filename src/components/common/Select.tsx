@@ -46,7 +46,6 @@ const SelectField = (props: SelectFieldProps) => {
   };
 
   useEffect(() => {
-    console.log("inside");
     const selectedWorkingDays = WorkingDaysOption.filter((day) =>
       defaultValue.includes(day.value)
     );

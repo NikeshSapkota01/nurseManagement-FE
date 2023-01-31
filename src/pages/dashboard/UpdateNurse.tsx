@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { successToast } from "@/utils/toast";
-import { updateNurse } from "@/reducers/nurse";
+import { addImage, updateNurse } from "@/reducers/nurse";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createNurseSchema } from "@/rules/validation";
 
@@ -64,8 +64,21 @@ const UpdateNurse: React.FC<{
   }, [actionStatus]);
 
   const onSubmit = async (data: AddNurseValue) => {
+    const nurseImage = data.nurseImage;
+    delete data.nurseImage;
+
     data.id = nurseId;
     dispatch(updateNurse(data));
+    if (nurseImage) {
+      let formData = new FormData();
+      const id = nurseId?.toString() ?? "0";
+
+      formData.append("nurseImage", nurseImage);
+      formData.append("nurseId", id);
+
+      dispatch(addImage(formData));
+    }
+    closeModal();
   };
 
   return (
@@ -84,8 +97,8 @@ const UpdateNurse: React.FC<{
           setValue={setValue}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
-          nurseId={nurseId}
           isEdit
+          image={individualNurse?.image ?? ""}
         />
       </div>
     </CustomeModal>

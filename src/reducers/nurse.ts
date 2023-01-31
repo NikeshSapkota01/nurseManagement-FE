@@ -4,7 +4,14 @@ import endpoints from "src/constants/endpoint";
 import { AddNurseValue, FetchNurseDataType } from "src/constants/interface";
 
 import { withToastForError } from "@/utils/withToastForError";
-import { get, remove, interpolate, post, put } from "@/utils/httpUtils";
+import {
+  get,
+  remove,
+  interpolate,
+  post,
+  put,
+  multiFormData,
+} from "@/utils/httpUtils";
 
 export const fetchAllNurse = createAsyncThunk("nurse/fetchAll", async () => {
   const response = await get(endpoints.nurse.getAllNurse);
@@ -29,6 +36,18 @@ export const updateNurse = createAsyncThunk(
     );
 
     return response?.data;
+  })
+);
+
+export const addImage = createAsyncThunk(
+  "nurse/image",
+  withToastForError(async (formData: FormData) => {
+    const { data } = await multiFormData.post(
+      endpoints.nurse.uploadImage,
+      formData
+    );
+
+    return data;
   })
 );
 
@@ -65,19 +84,19 @@ const nurseSlice = createSlice({
       })
       // add nurse
       .addCase(addNurse.fulfilled, (state, action) => {
-        state.status = "fullfilled";
+        state.status = "succeeded";
         const nurse = action.payload.data[0];
         state.data = [...state.data, nurse];
       })
       // update
       .addCase(updateNurse.fulfilled, (state, action) => {
-        const { nurseId } = action.payload;
+        const nurseId = action.payload?.data[0]?.id;
 
         const nurseData = state.data.filter(
           ({ id }: { id: number }) => id !== +nurseId
         );
 
-        state.status = "updated";
+        state.status = "succeeded";
         state.data = [action.payload.data[0], ...nurseData];
       })
       // delete nurse
@@ -89,6 +108,17 @@ const nurseSlice = createSlice({
 
         state.status = "succeeded";
         state.data = nurseData;
+      })
+      // add image
+      .addCase(addImage.fulfilled, (state, action) => {
+        const nurseId = action.payload?.data[0]?.id;
+
+        const nurseData = state.data.filter(
+          ({ id }: { id: number }) => id !== +nurseId
+        );
+
+        state.status = "succeeded";
+        state.data = [action.payload.data[0], ...nurseData];
       });
   },
 });

@@ -31,7 +31,6 @@ export interface FetchNurseDataType {
 }
 
 export interface FileUpload {
-  onFileUploaded: (data: any) => void;
   name: string;
   setValue: any;
 }
