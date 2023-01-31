@@ -15,6 +15,7 @@ const endpoints = {
     createNurse: "/nurses",
     updateNurse: "/nurses/:nurseId",
     deleteNurse: "/nurses/:nurseId",
+    uploadImage: "/nurses/images",
   },
 };
 

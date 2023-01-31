@@ -15,6 +15,13 @@ const http = axios.create({
   },
 });
 
+export const multiFormData = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL,
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+});
+
 /**
  * Http GET.
  *
@@ -145,6 +152,7 @@ export async function responseInterceptor(err: any) {
 }
 
 http.interceptors.request.use(requestInterceptor);
+multiFormData.interceptors.request.use(requestInterceptor);
 http.interceptors.response.use((response) => response, responseInterceptor);
 
 /**

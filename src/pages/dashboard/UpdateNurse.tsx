@@ -84,6 +84,7 @@ const UpdateNurse: React.FC<{
           setValue={setValue}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
+          nurseId={nurseId}
           isEdit
         />
       </div>

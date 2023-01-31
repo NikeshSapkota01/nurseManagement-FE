@@ -28,3 +28,8 @@ export interface FetchNurseDataType {
     | "updated";
   error: string | null | undefined;
 }
+
+export interface FileUpload {
+  onFileUploaded: (data: any) => void;
+  nurseId?: number;
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import SelectField from "@/components/common/Select";
 import InputField from "@/components/common/InputField";
@@ -12,6 +12,7 @@ import {
   UseFormSetValue,
 } from "react-hook-form";
 import { AddNurseValue } from "src/constants/interface";
+import FileUploadSingle from "@/components/common/fileUploadSingle";
 
 type FormElementTypes = {
   control: Control<AddNurseValue, any>;
@@ -21,6 +22,7 @@ type FormElementTypes = {
   onSubmit: (data: AddNurseValue) => Promise<void>;
   register: UseFormRegister<AddNurseValue>;
   setValue: UseFormSetValue<AddNurseValue>;
+  nurseId?: number;
 };
 
 const FormElement = ({
@@ -31,7 +33,15 @@ const FormElement = ({
   handleSubmit,
   onSubmit,
   isEdit = false,
+  nurseId,
 }: FormElementTypes) => {
+  const [image, setImage] = useState<string>("");
+
+  const onImageUploaded = (data: any) => {
+    const { Location: location } = data;
+
+    setImage(location);
+  };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <InputField
@@ -137,6 +147,8 @@ const FormElement = ({
           </p>
         )}
       </div>
+
+      <FileUploadSingle onFileUploaded={onImageUploaded} nurseId={nurseId} />
 
       <button
         type="submit"
