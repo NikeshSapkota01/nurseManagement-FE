@@ -124,12 +124,12 @@ export async function responseInterceptor(err: any) {
 
   if (error.status === 401 && error.data.message === "Unauthorized access!") {
     try {
-      const data = await post(endpoints.auth.token, { refreshToken });
+      const { data } = await post(endpoints.auth.token, { refreshToken });
 
       if (!data) {
         removeTokens();
 
-        throw new Error("there is no refresh token");
+        throw new Error("There is no refresh token");
       }
 
       const newAccessToken = `Bearer ${data.data.accessToken}`;

@@ -68,8 +68,8 @@ const Dashboard: NextPage = () => {
         accessor: "working_days",
         isSortable: true,
         Cell: ({ value: initialValue }: { value: string }) => {
-          const toArray = initialValue.slice(1, -1).split(",");
-          const formatedData = toArray.map((item: string, key: number) => (
+          const toArray = initialValue?.slice(1, -1).split(",");
+          const formatedData = toArray?.map((item: string, key: number) => (
             <p key={key}>{item.replace(/^"|"$/g, "")} </p>
           ));
           return formatedData;
